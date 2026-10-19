@@ -1,51 +1,49 @@
 package com.example.QuanLySinhVien.controller;
 
-import com.example.QuanLySinhVien.model.User;
+import com.example.QuanLySinhVien.dto.UserDto;
+import com.example.QuanLySinhVien.dto.ApiResponse;
+import com.example.QuanLySinhVien.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RequestMapping("/api/users")
 @RestController
 public class UserController {
-    private List<User> users = new ArrayList<>();
-    private int currentId = 1;
-
+    @Autowired
+    private UserService userService;
 
     @GetMapping
-    public List<User> getUsers() {
-        return users;
+    public ResponseEntity<ApiResponse<List<UserDto>>> getUsers() {
+        ApiResponse<List<UserDto>> res = userService.getUsers();
+        return ResponseEntity.status(res.getStatus()).body(res);
     }
 
     @GetMapping("/{id}")
-    public User getUser(@PathVariable int id) {
-        for (User u : users)
-            if (u.getId() == id) return u;
-        return null;
+    public ResponseEntity<ApiResponse<UserDto>> getUser(@PathVariable int id) {
+        ApiResponse<UserDto> res = userService.getUser(id);
+        return ResponseEntity.status(res.getStatus()).body(res);
     }
 
     @PostMapping
-    public User addUser(@RequestBody User newUser) {
-        newUser.setId(currentId);
-        currentId++;
-        users.add(newUser);
-        return newUser;
+    public ResponseEntity<ApiResponse<UserDto>> addUser(@RequestBody UserDto request) {
+        ApiResponse<UserDto> res = userService.addUser(request);
+        return ResponseEntity.status(res.getStatus()).body(res);
+    }
+
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ApiResponse<UserDto>> updateUser(@PathVariable int id, @RequestBody UserDto request) {
+        ApiResponse<UserDto> res = userService.updateUser(id, request);
+        return ResponseEntity.status(res.getStatus()).body(res);
     }
 
     @DeleteMapping("/{id}")
-    public boolean deleteUser(@PathVariable int id) {
-        return users.removeIf(u -> u.getId() == id);
-    }
-
-    @PutMapping("/{id}")
-    public User updateUser(@PathVariable int id, @RequestBody User userMoi) {
-        for (User u : users)
-            if (u.getId() == id) {
-                u.setTen(userMoi.getTen());
-                return u;
-            }
-        return null;
+    public ResponseEntity<ApiResponse<Void>> delete(@PathVariable int id) {
+        ApiResponse<Void> res = userService.delete(id);
+        return ResponseEntity.status(res.getStatus()).body(res);
     }
 
 }
