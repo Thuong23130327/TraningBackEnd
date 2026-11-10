@@ -11,7 +11,4 @@ public class ErrorCode {
     public static final String PHONGBAN_ERROR_NOT_FOUND = "ERROR-PHONGBAN-0000";
     public static final String PHONGBAN_ERROR_NAME_EMPTY = "ERROR-PHONGBAN-0001";
 
-
-
-
 }
